@@ -1,4 +1,4 @@
-# BW Transfomation Framework :bar_chart: :octocat:
+# BW Transfomation Framework :bar_chart:
 
 Framework for modern transformation handle, now you dont have to edit all of them.
 
