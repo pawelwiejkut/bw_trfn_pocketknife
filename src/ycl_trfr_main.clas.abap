@@ -7,7 +7,7 @@ CLASS ycl_trfr_main DEFINITION
   PUBLIC SECTION.
 
     METHODS: maintain_start_routine
-      IMPORTING iv_tranid TYPE string.
+      IMPORTING iv_tranid TYPE rstranid.
     METHODS: create_start_routine.
 
   PROTECTED SECTION.
@@ -73,7 +73,46 @@ CLASS ycl_trfr_main IMPLEMENTATION.
         i_amdp = abap_true
 ).
 
-*    DATA(lt_test) = lr_tran->get_start_rule( ).
+    DATA(lt_test) = lr_tran->get_start_rule( ).
+    DATA(lr_rut) = lr_tran->get_start_routine( ).
+
+*    lr_rut->maintain(
+*      EXPORTING
+*        i_mode       = CONV #('CREATE')    " Function Code that Triggered PAI
+**        i_with_popup = RS_C_TRUE    " Boolean
+**        i_default    = RS_C_FALSE    " Boolean
+*    ).
+
+  lr_rut->get_codeid(
+    IMPORTING
+      e_codid     =  DATA(lv_codeid)   " ID for ABAP code
+      e_globalid  =  DATA(lv_globid)   " ID for ABAP code
+      e_globalid2 =  DATA(lv_globid2)   " ID for ABAP code
+  ).
+
+  DATA:
+           l_t_routine_source TYPE rstran_t_abapsource,
+        l_t_routine_source_inv TYPE rstran_t_abapsource,
+        l_t_global_source      TYPE rstran_t_abapsource,
+        l_t_global_source_2    TYPE rstran_t_abapsource.
+
+        APPEND VALUE #( line = CONV #('*dsfdsfdsfds') ) to l_t_routine_source.
+        APPEND VALUE #( line = CONV #('*dsfdsfdsfds') ) to l_t_routine_source_inv.
+        APPEND VALUE #( line = CONV #('*dsfdsfdsfds') ) to l_t_global_source.
+        APPEND VALUE #( line = CONV #('*dsfdsfdsfds') ) to l_t_global_source_2.
+
+lr_rut->store_routine(
+  EXPORTING
+    i_codeid            =  lv_codeid  " ID for ABAP code
+    i_codeid_global     =  lv_globid   " ID for ABAP code
+*    i_routinetxtlg      =
+    i_codeid_global2    =  lv_globid2   " ID for ABAP code
+    i_t_source          =  l_t_routine_source   " ABAP_SOURCE
+    i_t_source_global   =  l_t_global_source   " ABAP_SOURCE
+    i_t_source_inverse  = l_t_routine_source_inv    " ABAP_SOURCE
+    i_t_source_global_2 =  l_t_global_source_2    " ABAP_SOURCE
+).
+
 *    lt_test->save_global_routine( ).
 **  CATCH cx_rstran_no_save.    "
 **  CATCH cx_rstran_no_code_save.    "
@@ -112,6 +151,7 @@ lr_tran->if_rso_tlogo_maintain~activate(
   ENDMETHOD.
 
   METHOD maintain_start_routine.
+
     DATA p_r_tran_maintain TYPE REF TO cl_rstran_maintain .
 
     CREATE OBJECT p_r_tran_maintain
