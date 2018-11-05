@@ -99,33 +99,52 @@ CLASS ycl_bw_trfr_main IMPLEMENTATION.
       l_t_global_source      TYPE rstran_t_abapsource,
       l_t_global_source_2    TYPE rstran_t_abapsource.
 
-    APPEND VALUE #( line = CONV #('DATA lobj_routine TYPE REF TO') ) TO l_t_global_source.
-    APPEND VALUE #( line = CONV #( iv_clsname ) ) TO l_t_global_source.
+*    APPEND VALUE #( line = CONV #('DATA lobj_routine TYPE REF TO') ) TO l_t_global_source.
+*    APPEND VALUE #( line = CONV #( iv_clsname ) ) TO l_t_global_source.
 
-    APPEND VALUE #( line = |  | ) TO l_t_routine_source.
-    APPEND VALUE #( line = | IF lobj_routine IS NOT BOUND. | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |    lobj_routine = NEW #( ). | ) TO l_t_routine_source.
-    APPEND VALUE #( line = | ENDIF. | ) TO l_t_routine_source.
-    APPEND VALUE #( line = | | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |lobj_routine->{ iv_intname }~start( | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |  EXPORTING | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   iv_request = request| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   iv_datapackid = datapackid| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   iv_segid = segid| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   it_source_package = source_package| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |  IMPORTING| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   et_monitor         = monitor| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   et_source_package  = source_package ).| ) TO l_t_routine_source.
-    APPEND VALUE #( line = | | ) TO l_t_routine_source.
 
-    lr_rut->store_routine(
-      EXPORTING
-        i_codeid            =  lv_codeid  " ID for ABAP code
-        i_codeid_global     =  lv_globid   " ID for ABAP code
-        i_codeid_global2    =  lv_globid2   " ID for ABAP code
-        i_t_source          =  l_t_routine_source   " ABAP_SOURCE
-        i_t_source_global   =  l_t_global_source   " ABAP_SOURCE
-    ).
+        APPEND VALUE #( line = CONV #('*dsfdsfdsfds') ) to l_t_routine_source.
+        APPEND VALUE #( line = CONV #('*dsfdsfdsfds') ) to l_t_routine_source_inv.
+        APPEND VALUE #( line = CONV #('*dsfdsfdsfds') ) to l_t_global_source.
+        APPEND VALUE #( line = CONV #('*dsfdsfdsfds') ) to l_t_global_source_2.
+
+lr_rut->store_routine(
+  EXPORTING
+    i_codeid            =  lv_codeid  " ID for ABAP code
+    i_codeid_global     =  lv_globid   " ID for ABAP code
+*    i_routinetxtlg      =
+    i_codeid_global2    =  lv_globid2   " ID for ABAP code
+    i_t_source          =  l_t_routine_source   " ABAP_SOURCE
+    i_t_source_global   =  l_t_global_source   " ABAP_SOURCE
+    i_t_source_inverse  = l_t_routine_source_inv    " ABAP_SOURCE
+    i_t_source_global_2 =  l_t_global_source_2    " ABAP_SOURCE
+).
+
+
+*    APPEND VALUE #( line = |  | ) TO l_t_routine_source.
+*    APPEND VALUE #( line = | IF lobj_routine IS NOT BOUND. | ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |    lobj_routine = NEW #( ). | ) TO l_t_routine_source.
+*    APPEND VALUE #( line = | ENDIF. | ) TO l_t_routine_source.
+*    APPEND VALUE #( line = | | ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |lobj_routine->{ iv_intname }~start( | ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |  EXPORTING | ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |   iv_request = request| ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |   iv_datapackid = datapackid| ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |   iv_segid = segid| ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |   it_source_package = source_package| ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |  IMPORTING| ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |   et_monitor         = monitor| ) TO l_t_routine_source.
+*    APPEND VALUE #( line = |   et_source_package  = source_package ).| ) TO l_t_routine_source.
+*    APPEND VALUE #( line = | | ) TO l_t_routine_source.
+
+*    lr_rut->store_routine(
+*      EXPORTING
+*        i_codeid            =  lv_codeid  " ID for ABAP code
+*        i_codeid_global     =  lv_globid   " ID for ABAP code
+*        i_codeid_global2    =  lv_globid2   " ID for ABAP code
+*        i_t_source          =  l_t_routine_source   " ABAP_SOURCE
+*        i_t_source_global   =  l_t_global_source   " ABAP_SOURCE
+*    ).
 
     lr_tran->if_rso_tlogo_maintain~save( ).
 
