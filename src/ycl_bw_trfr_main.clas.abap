@@ -120,6 +120,10 @@ lr_rut->store_routine(
     i_t_source_global_2 =  l_t_global_source_2    " ABAP_SOURCE
 ).
 
+   lr_rut->save_global_routine( ).
+**  CATCH cx_rstran_no_save.    "
+**  CATCH cx_rstran_no_code_save.    "
+*
 
 *    APPEND VALUE #( line = |  | ) TO l_t_routine_source.
 *    APPEND VALUE #( line = | IF lobj_routine IS NOT BOUND. | ) TO l_t_routine_source.
@@ -136,7 +140,7 @@ lr_rut->store_routine(
 *    APPEND VALUE #( line = |   et_monitor         = monitor| ) TO l_t_routine_source.
 *    APPEND VALUE #( line = |   et_source_package  = source_package ).| ) TO l_t_routine_source.
 *    APPEND VALUE #( line = | | ) TO l_t_routine_source.
-
+*
 *    lr_rut->store_routine(
 *      EXPORTING
 *        i_codeid            =  lv_codeid  " ID for ABAP code
