@@ -5,10 +5,13 @@
 *&---------------------------------------------------------------------*
 REPORT ybw_trfn_manage.
 
-NEW ycl_bw_trfr_main( )->generate_start_routine(
-  EXPORTING
-    iv_tranid  = '0K0FNSRTS44KBUW5N9865SS42T2SV4XS'
-    iv_clsname = ''
-    iv_intname = ''
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
 
-).
+PARAMETERS:
+          pa_trid TYPE rstranid.
+
+SELECTION-SCREEN END OF BLOCK b1.
+
+END-OF-SELECTION.
+
+  NEW ycl_bw_trfr_main( )->create_start_routine( iv_tranid = pa_trid ).
