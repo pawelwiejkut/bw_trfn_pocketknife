@@ -6,25 +6,67 @@ CLASS ycl_bw_trfr_main DEFINITION
 
   PUBLIC SECTION.
 
+    METHODS set_globals
+      IMPORTING !iv_tranid TYPE rstranid.
+
+    "! <p class="shorttext synchronized" lang="en">Create start routine</p>
+    "!
+    "! @parameter iv_tranid | <p class="shorttext synchronized" lang="en">Transformation ID</p>
     METHODS create_start_routine
       IMPORTING !iv_tranid TYPE rstranid.
 
+    "! <p class="shorttext synchronized" lang="en">Generate start routine</p>
+    "! This method add start routine to transformation
+    "! @parameter iv_tranid | <p class="shorttext synchronized" lang="en"Transformation ID></p>
+    "! @parameter iv_clsname | <p class="shorttext synchronized" lang="en">Class Name</p>
+    "! @parameter iv_intname | <p class="shorttext synchronized" lang="en">Interface Name</p>
     METHODS generate_start_routine
       IMPORTING !iv_tranid  TYPE rstranid
                 !iv_clsname TYPE string
                 !iv_intname TYPE string.
 
+    "! <p class="shorttext synchronized" lang="en">Create class</p>
+    "! Create class which implements interface
+    "! @parameter iv_clsname | <p class="shorttext synchronized" lang="en">Class Name</p>
+    "! @parameter iv_intname | <p class="shorttext synchronized" lang="en">Interface Name</p>
     METHODS create_class
       IMPORTING !iv_clsname TYPE string
                 !iv_intname TYPE string.
 
+    "! <p class="shorttext synchronized" lang="en">Show class after creation</p>
+    "!
+    METHODS show_class.
+
+    "! <p class="shorttext synchronized" lang="en">Start processing</p>
+    "!
+    "! @parameter iv_clsname | <p class="shorttext synchronized" lang="en">Class name</p>
+    "! @parameter iv_clsshow | <p class="shorttext synchronized" lang="en">Show class after generation?</p>
+    METHODS start_processing
+      IMPORTING !iv_tranid  TYPE rstranid
+                !iv_clsshow TYPE boolean.
+
   PROTECTED SECTION.
+
+    DATA:
+      ov_classna TYPE string,
+      ov_ifname  TYPE string.
+
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
 CLASS ycl_bw_trfr_main IMPLEMENTATION.
+
+  METHOD start_processing.
+
+    set_globals( iv_tranid ).
+    create_start_routine( iv_tranid ).
+    IF iv_clsshow = abap_true.
+      show_class(  ).
+    ENDIF.
+
+  ENDMETHOD.
 
 
   METHOD create_class.
@@ -84,47 +126,22 @@ CLASS ycl_bw_trfr_main IMPLEMENTATION.
       EXIT.
     ENDIF.
 
-*    CALL FUNCTION 'RS_TOOL_ACCESS' "This can show created class
-*      EXPORTING
-*        operation   = 'SHOW'
-*        object_name = iv_clsname.
-
   ENDMETHOD.
 
 
   METHOD create_start_routine.
-    TRY.
-        CALL METHOD cl_rstran_trfn=>factory
-          EXPORTING
-            i_tranid = iv_tranid
-          RECEIVING
-            r_r_tran = DATA(lr_tran).
-
-        lr_tran->get_source(
-          IMPORTING
-           e_s_source =  DATA(ls_source) ).
-
-        lr_tran->get_target(
-          IMPORTING
-            e_s_target =  DATA(ls_target) ).
-      CATCH cx_rstran_not_found.    "
-      CATCH cx_rstran_input_invalid.    "
-      CATCH cx_rstran_error_with_message.
-    ENDTRY.
-
-    SPLIT ls_source-objnm AT ' ' INTO: DATA(lv_source) DATA(lv_rest).
 
     create_class(
       EXPORTING
-        iv_clsname = |YCL_BW_{ lv_source }_{ ls_target-objnm }| "Class default name is YCL_BW_SOURCE_TARGET
-        iv_intname = 'YIF_BW_START_ROUTINE' "Interface name
+        iv_clsname = ov_classna "Class default name is YCL_BW_SOURCE_TARGET
+        iv_intname = ov_ifname  "Interface name
      ).
 
     generate_start_routine(
       EXPORTING
         iv_tranid  = iv_tranid
-        iv_clsname = |YCL_BW_{ lv_source }_{ ls_target-objnm }| "Class default name is YCL_BW_SOURCE_TARGET
-        iv_intname = 'YIF_BW_START_ROUTINE' "Interface name
+        iv_clsname = ov_classna  "Class default name is YCL_BW_SOURCE_TARGET
+        iv_intname = ov_ifname   "Interface name
     ).
 
   ENDMETHOD.
@@ -216,4 +233,43 @@ CLASS ycl_bw_trfr_main IMPLEMENTATION.
 
 
   ENDMETHOD.
+
+  METHOD show_class.
+
+    CALL FUNCTION 'RS_TOOL_ACCESS' "This can show created class
+      EXPORTING
+        operation   = 'SHOW'
+        object_type = 'CLAS'
+        object_name = ov_classna.
+
+  ENDMETHOD.
+
+  METHOD set_globals.
+
+    TRY.
+        CALL METHOD cl_rstran_trfn=>factory
+          EXPORTING
+            i_tranid = iv_tranid
+          RECEIVING
+            r_r_tran = DATA(lr_tran).
+
+        lr_tran->get_source(
+          IMPORTING
+           e_s_source =  DATA(ls_source) ).
+
+        lr_tran->get_target(
+          IMPORTING
+            e_s_target =  DATA(ls_target) ).
+      CATCH cx_rstran_not_found.    "
+      CATCH cx_rstran_input_invalid.    "
+      CATCH cx_rstran_error_with_message.
+    ENDTRY.
+
+    SPLIT ls_source-objnm AT ' ' INTO: DATA(lv_source) DATA(lv_rest).
+
+    ov_classna = |YCL_BW_{ lv_source }_{ ls_target-objnm }|.
+    ov_ifname = 'YIF_BW_START_ROUTINE'.
+
+  ENDMETHOD.
+
 ENDCLASS.

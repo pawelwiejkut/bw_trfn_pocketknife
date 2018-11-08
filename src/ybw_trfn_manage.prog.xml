@@ -26,6 +26,12 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>PA_SCLA</KEY>
+     <ENTRY>Show class after creation</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>PA_TRID</KEY>
      <ENTRY>Transformation ID:</ENTRY>
      <LENGTH>26</LENGTH>
