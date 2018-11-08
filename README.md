@@ -4,7 +4,7 @@ Framework for modern transformation handle, now you dont have to edit all of the
 
 ## How it works?
 
-![](https://s2.gifyu.com/images/Nov-08-2018-19-34-39.gif)
+![](promo_video.gif)
 
 ## What is this?
 
