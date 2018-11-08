@@ -9,5 +9,6 @@ This is a framework for better transformation handling in SAP BW. Normally you h
 ## Naming conventions
 
 This project using a following naming conventions:
+
 https://1drv.ms/w/s!AnqUAr5ULTVlgVVTvStV_xtAVqlf
 
