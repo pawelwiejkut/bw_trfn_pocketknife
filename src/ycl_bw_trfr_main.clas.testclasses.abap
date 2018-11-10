@@ -4,17 +4,33 @@ CLASS ltcl_ DEFINITION FINAL FOR TESTING
   RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
+
+    DATA: lobj_global TYPE REF TO ycl_bw_trfr_main.
+
+    METHODS setup.
+
     METHODS:
-      first_test FOR TESTING RAISING cx_static_check.
+      generate_end_routine_test FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 
 CLASS ltcl_ IMPLEMENTATION.
 
-  METHOD first_test.
-    DATA(lobj_global) = NEW ycl_bw_trfr_main( ).
-    lobj_global->create_start_routine( '0ERRA0ODM95RW0KJFYO09TR0JSOI8JQD' ).
-    cl_abap_unit_assert=>fail( 'Implement your first test here' ).
+  METHOD generate_end_routine_test.
+
+    lobj_global->start_processing(
+      EXPORTING
+        iv_tranid  =  '0ERRA0ODM95RW0KJFYO09TR0JSOI8JQD'   " Transformation ID
+        iv_routine =  'END'
+        iv_clsshow =  abap_false   " Show class after generation?
+    ).
+
+  ENDMETHOD.
+
+  METHOD setup.
+
+    lobj_global = NEW #( ).
+
   ENDMETHOD.
 
 ENDCLASS.
