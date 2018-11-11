@@ -18,18 +18,18 @@ CLASS ltcl_ IMPLEMENTATION.
 
   METHOD generate_end_routine_test.
 
-    lobj_global->start_processing(
-      EXPORTING
-        iv_tranid  =  '0ERRA0ODM95RW0KJFYO09TR0JSOI8JQD'   " Transformation ID
-        iv_routine =  'END'
-        iv_clsshow =  abap_false   " Show class after generation?
-    ).
+*    lobj_global->start_processing(
+*      EXPORTING
+*        iv_tranid  =  '0ERRA0ODM95RW0KJFYO09TR0JSOI8JQD'   " Transformation ID
+*        iv_routine =  'END'
+*        iv_clsshow =  abap_false   " Show class after generation?
+*    ).
 
   ENDMETHOD.
 
   METHOD setup.
 
-    lobj_global = NEW #( ).
+    lobj_global = NEW #( iv_tranid = '0ERRA0ODM95RW0KJFYO09TR0JSOI8JQD' ).
 
   ENDMETHOD.
 

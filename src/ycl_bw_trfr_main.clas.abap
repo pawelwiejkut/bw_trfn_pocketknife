@@ -1,30 +1,11 @@
 CLASS ycl_bw_trfr_main DEFINITION
   PUBLIC
-  FINAL
   CREATE PUBLIC .
-
 
   PUBLIC SECTION.
 
-    METHODS set_globals
-      IMPORTING !iv_tranid TYPE rstranid
-                !iv_rtyp   TYPE string.
-
-    "! <p class="shorttext synchronized" lang="en">Create start routine</p>
-    "!
-    "! @parameter iv_tranid | <p class="shorttext synchronized" lang="en">Transformation ID</p>
-    METHODS create_start_routine
+    METHODS constructor
       IMPORTING !iv_tranid TYPE rstranid.
-
-    "! <p class="shorttext synchronized" lang="en">Generate start routine</p>
-    "! This method add start routine to transformation
-    "! @parameter iv_tranid | <p class="shorttext synchronized" lang="en"Transformation ID></p>
-    "! @parameter iv_clsname | <p class="shorttext synchronized" lang="en">Class Name</p>
-    "! @parameter iv_intname | <p class="shorttext synchronized" lang="en">Interface Name</p>
-    METHODS generate_start_routine
-      IMPORTING !iv_tranid  TYPE rstranid
-                !iv_clsname TYPE string
-                !iv_intname TYPE string.
 
     "! <p class="shorttext synchronized" lang="en">Create class</p>
     "! Create class which implements interface
@@ -39,30 +20,19 @@ CLASS ycl_bw_trfr_main DEFINITION
     "!
     METHODS show_class.
 
-    "! <p class="shorttext synchronized" lang="en">Start processing</p>
-    "!
-    "! @parameter iv_clsname | <p class="shorttext synchronized" lang="en">Class name</p>
-    "! @parameter iv_clsshow | <p class="shorttext synchronized" lang="en">Show class after generation?</p>
-    METHODS start_processing
-      IMPORTING !iv_tranid  TYPE rstranid
-                !iv_routine TYPE string
-                !iv_clsshow TYPE boolean.
+    METHODS: get_ov_classna RETURNING VALUE(r_result) TYPE string,
+             get_ov_ifname RETURNING VALUE(r_result) TYPE string,
+             set_ov_classna IMPORTING iv_ov_classna TYPE string,
+             set_ov_ifname IMPORTING iv_ov_ifname TYPE string.
 
-    METHODS generate_end_routine
-      IMPORTING !iv_tranid  TYPE rstranid
-                !iv_clsname TYPE string
-                !iv_intname TYPE string.
-
-    METHODS create_end_routine
-      IMPORTING !iv_tranid TYPE rstranid.
 
   PROTECTED SECTION.
+  PRIVATE SECTION.
 
     DATA:
       ov_classna TYPE string,
       ov_ifname  TYPE string.
 
-  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -130,222 +100,7 @@ CLASS ycl_bw_trfr_main IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD create_end_routine.
-
-
-    create_class(
-      EXPORTING
-        iv_clsname = ov_classna "Class default name is YCL_BW_<SOURCE>_<TARGET>
-        iv_ifname = |{ ov_ifname }|  "Interface name
-        iv_rtype = 'END'
-     ).
-
-    generate_end_routine(
-      EXPORTING
-        iv_tranid  = iv_tranid
-        iv_clsname = ov_classna  "Class default name is YCL_BW_<SOURCE>_<TARGET>
-        iv_intname = ov_ifname   "Interface name
-    ).
-
-
-  ENDMETHOD.
-
-
-  METHOD create_start_routine.
-
-    create_class(
-      EXPORTING
-        iv_clsname = ov_classna "Class default name is YCL_BW_<SOURCE>_<TARGET>
-        iv_ifname = |{ ov_ifname }|  "Interface name
-        iv_rtype = 'START'
-     ).
-
-    generate_start_routine(
-      EXPORTING
-        iv_tranid  = iv_tranid
-        iv_clsname = ov_classna  "Class default name is YCL_BW_<SOURCE>_<TARGET>
-        iv_intname = ov_ifname   "Interface name
-    ).
-
-  ENDMETHOD.
-
-
-  METHOD generate_end_routine.
-
-    "Get info about source and target, necessary to have auto rule copy
-    SELECT SINGLE sourcename,targetname,sourcetype,targettype FROM rstran
-    INTO  @DATA(ls_rstran)
-    WHERE tranid = @iv_tranid AND objvers = 'A'.
-
-    DATA: lr_tran TYPE REF TO cl_rstran_trfn.
-    TRY.
-        CALL METHOD cl_rstran_trfn=>factory
-          EXPORTING
-            i_tranid       = iv_tranid
-            i_s_source     = CONV #( |{ ls_rstran-sourcetype }{ ls_rstran-sourcename } | )   " BW Repository: TLOGO Object, type and type of association
-            i_s_target     = CONV #( |{ ls_rstran-targettype }{ ls_rstran-targetname } | )   " BW Repository: TLOGO Object, type and type of association
-            i_new          = abap_true
-            i_with_message = rs_c_true
-          RECEIVING
-            r_r_tran       = lr_tran.
-      CATCH cx_rstran_not_found.    "
-      CATCH cx_rstran_input_invalid.    "
-      CATCH cx_rstran_error_with_message.    "
-    ENDTRY.
-
-    TRY.
-        lr_tran->create_end_routine( ).
-*          CATCH cx_rstran_input_invalid.    "
-      CATCH cx_rstran_input_invalid.
-        "handle exception
-    ENDTRY.
-
-    DATA(lr_rut) = lr_tran->get_end_routine( ).
-    DATA(lr_rule) = lr_rut->get_rule_ref( ).
-
-    lr_rut->get_codeid(
-       IMPORTING
-         e_codid     =  DATA(lv_codeid)
-         e_globalid  =  DATA(lv_globid)
-         e_globalid2 =  DATA(lv_globid2)
-     ).
-
-    DATA:
-      l_t_routine_source     TYPE rstran_t_abapsource,
-      l_t_routine_source_inv TYPE rstran_t_abapsource,
-      l_t_global_source      TYPE rstran_t_abapsource,
-      l_t_global_source_2    TYPE rstran_t_abapsource.
-    "Global code declarations
-    APPEND VALUE #( line  = | DATA lobj_routine TYPE REF TO | ) TO l_t_global_source.
-    APPEND VALUE #( line  = | { iv_clsname }. | ) TO l_t_global_source.
-    "Source code
-    APPEND VALUE #( line = |  | ) TO l_t_routine_source.
-    APPEND VALUE #( line = | IF lobj_routine IS NOT BOUND. | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |    lobj_routine = NEW #( ). | ) TO l_t_routine_source.
-    APPEND VALUE #( line = | ENDIF. | ) TO l_t_routine_source.
-    APPEND VALUE #( line = | | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |lobj_routine->{ iv_intname }~end( | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |  EXPORTING | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   iv_request = request| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   iv_datapackid = datapackid| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   iv_segid = segid| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   it_result_package = result_package| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |  IMPORTING| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   et_monitor         = monitor| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   et_result_package  = result_package ).| ) TO l_t_routine_source.
-    APPEND VALUE #( line = | | ) TO l_t_routine_source.
-
-    lr_rut->store_routine(  "TO-DO: Check could this be deleted
-      EXPORTING
-        i_codeid            =  lv_codeid
-        i_codeid_global     =  lv_globid
-        i_t_source          =  l_t_routine_source
-        i_t_source_global   =  l_t_global_source
-    ).
-    "ADMP change, necessary to handle global code
-    lr_rule->set_runtime_flag( ).
-
-    TRY.
-        lr_tran->if_rso_tlogo_maintain~save( ).
-      CATCH cx_rs_error_with_message.
-        "handle exception
-    ENDTRY.
-
-    lr_tran->if_rso_tlogo_maintain~activate(  ).
-
-
-  ENDMETHOD.
-
-
-  METHOD generate_start_routine.
-
-    "Get info about source and target, necessary to have auto rule copy
-    SELECT SINGLE sourcename,targetname,sourcetype,targettype FROM rstran
-    INTO  @DATA(ls_rstran)
-    WHERE tranid = @iv_tranid AND objvers = 'A'.
-
-    DATA: lr_tran TYPE REF TO cl_rstran_trfn.
-    TRY.
-        CALL METHOD cl_rstran_trfn=>factory
-          EXPORTING
-            i_tranid       = iv_tranid
-            i_s_source     = CONV #( |{ ls_rstran-sourcetype }{ ls_rstran-sourcename } | )   " BW Repository: TLOGO Object, type and type of association
-            i_s_target     = CONV #( |{ ls_rstran-targettype }{ ls_rstran-targetname } | )   " BW Repository: TLOGO Object, type and type of association
-            i_new          = abap_true
-            i_with_message = rs_c_true
-          RECEIVING
-            r_r_tran       = lr_tran.
-      CATCH cx_rstran_not_found.    "
-      CATCH cx_rstran_input_invalid.    "
-      CATCH cx_rstran_error_with_message.    "
-    ENDTRY.
-
-    TRY.
-        lr_tran->create_start_routine(
-            i_amdp = rs_c_false
-        ).
-      CATCH cx_rstran_input_invalid.
-        "handle exception
-    ENDTRY.
-
-    DATA(l_rule) = lr_tran->get_start_rule( ).
-    DATA(lr_rut) = lr_tran->get_start_routine( ).
-
-    lr_rut->get_codeid(
-       IMPORTING
-         e_codid     =  DATA(lv_codeid)
-         e_globalid  =  DATA(lv_globid)
-         e_globalid2 =  DATA(lv_globid2)
-     ).
-
-    DATA:
-      l_t_routine_source     TYPE rstran_t_abapsource,
-      l_t_routine_source_inv TYPE rstran_t_abapsource,
-      l_t_global_source      TYPE rstran_t_abapsource,
-      l_t_global_source_2    TYPE rstran_t_abapsource.
-    "Global code declarations
-    APPEND VALUE #( line  = | DATA lobj_routine TYPE REF TO | ) TO l_t_global_source.
-    APPEND VALUE #( line  = | { iv_clsname }. | ) TO l_t_global_source.
-    "Source code
-    APPEND VALUE #( line = |  | ) TO l_t_routine_source.
-    APPEND VALUE #( line = | IF lobj_routine IS NOT BOUND. | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |    lobj_routine = NEW #( ). | ) TO l_t_routine_source.
-    APPEND VALUE #( line = | ENDIF. | ) TO l_t_routine_source.
-    APPEND VALUE #( line = | | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |lobj_routine->{ iv_intname }~start( | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |  EXPORTING | ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   iv_request = request| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   iv_datapackid = datapackid| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   iv_segid = segid| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   it_source_package = source_package| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |  IMPORTING| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   et_monitor         = monitor| ) TO l_t_routine_source.
-    APPEND VALUE #( line = |   et_source_package  = source_package ).| ) TO l_t_routine_source.
-    APPEND VALUE #( line = | | ) TO l_t_routine_source.
-
-    lr_rut->store_routine(  "TO-DO: Check could this be deleted
-      EXPORTING
-        i_codeid            =  lv_codeid
-        i_codeid_global     =  lv_globid
-        i_t_source          =  l_t_routine_source
-        i_t_source_global   =  l_t_global_source
-    ).
-    "ADMP change, necessary to handle global code
-    l_rule->set_runtime_flag( ).
-
-    TRY.
-        lr_tran->if_rso_tlogo_maintain~save( ).
-      CATCH cx_rs_error_with_message.
-        "handle exception
-    ENDTRY.
-
-    lr_tran->if_rso_tlogo_maintain~activate(  ).
-
-
-  ENDMETHOD.
-
-
-  METHOD set_globals.
+  METHOD constructor.
 
     TRY.
         CALL METHOD cl_rstran_trfn=>factory
@@ -370,11 +125,6 @@ CLASS ycl_bw_trfr_main IMPLEMENTATION.
 
     ov_classna = |YCL_BW_{ lv_source }_{ ls_target-objnm }|.
 
-    IF iv_rtyp = 'START'.
-      ov_ifname = 'YIF_BW_START_ROUTINE'.
-    ELSEIF iv_rtyp = 'END'.
-      ov_ifname = 'YIF_BW_END_ROUTINE'.
-    ENDIF.
   ENDMETHOD.
 
 
@@ -388,24 +138,20 @@ CLASS ycl_bw_trfr_main IMPLEMENTATION.
 
   ENDMETHOD.
 
-
-  METHOD start_processing.
-
-    set_globals(
-      EXPORTING
-        iv_tranid = iv_tranid
-        iv_rtyp   = iv_routine
-    ).
-
-    IF iv_routine = 'START'.
-      create_start_routine( iv_tranid ).
-    ELSEIF iv_routine = 'END'.
-      create_end_routine( iv_tranid ).
-    ENDIF.
-
-    IF iv_clsshow = abap_true.
-      show_class(  ).
-    ENDIF.
-
+  METHOD get_ov_classna.
+    r_result = me->ov_classna.
   ENDMETHOD.
+
+  METHOD set_ov_classna.
+    me->ov_classna = iv_ov_classna.
+  ENDMETHOD.
+
+  METHOD set_ov_ifname.
+    me->ov_ifname = iv_ov_ifname.
+  ENDMETHOD.
+
+  METHOD get_ov_ifname.
+    r_result = me->ov_ifname.
+  ENDMETHOD.
+
 ENDCLASS.

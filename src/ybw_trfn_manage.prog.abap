@@ -11,12 +11,13 @@ PARAMETERS:
           pa_trid TYPE rstranid,
           pa_scla AS CHECKBOX TYPE boolean.
 
+
+
 SELECTION-SCREEN END OF BLOCK b1.
 
 END-OF-SELECTION.
 
-NEW ycl_bw_trfr_main( )->start_processing(
-  EXPORTING
-    iv_tranid  =  pa_trid   " Transformation ID
-    iv_clsshow =  pa_scla   " Show class after generation?
+NEW ycl_bw_trfr_start(
+    iv_tranid = pa_trid
+    iv_rtyp   = 'START'
 ).
