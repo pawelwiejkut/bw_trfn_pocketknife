@@ -1,6 +1,6 @@
-# BW Transfomation Framework :bar_chart:
+# BW Transfomation Pocketknife :bar_chart:
 
-Framework for modern transformation handle, now you dont have to edit all of them and add class inside.
+Software for modern transformation handle, now you dont have to edit all of them and add class inside.
 
 ## How it works?
 
