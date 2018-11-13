@@ -6,26 +6,14 @@ CLASS ycl_bw_trpn_rout_start DEFINITION
 
   PUBLIC SECTION.
 
-    "! <p class="shorttext synchronized" lang="en">Generate start routine</p>
-    "! This method add start routine to transformation
-    "! @parameter iv_tranid  | <p class="shorttext synchronized" lang="en"Transformation ID></p>
-    "! @parameter iv_clsname | <p class="shorttext synchronized" lang="en">Class Name</p>
-    "! @parameter iv_intname | <p class="shorttext synchronized" lang="en">Interface Name</p>
     METHODS generate_start_routine
       IMPORTING !iv_tranid  TYPE rstranid
                 !iv_clsname TYPE string
                 !iv_intname TYPE string.
 
-    "! <p class="shorttext synchronized" lang="en">Create start routine</p>
-    "!
-    "! @parameter iv_tranid | <p class="shorttext synchronized" lang="en">Transformation ID</p>
     METHODS create_start_routine
       IMPORTING !iv_tranid TYPE rstranid.
 
-    "! <p class="shorttext synchronized" lang="en">Start processing</p>
-    "!
-    "! @parameter iv_clsname | <p class="shorttext synchronized" lang="en">Class name</p>
-    "! @parameter iv_clsshow | <p class="shorttext synchronized" lang="en">Show class after generation?</p>
     METHODS start_processing
       IMPORTING !iv_tranid  TYPE rstranid
                 !iv_routine TYPE string
@@ -43,12 +31,10 @@ CLASS ycl_bw_trpn_rout_start IMPLEMENTATION.
 
   METHOD create_start_routine.
 
-    create_class(
-      EXPORTING
-        iv_clsname = get_ov_classna( ) "Class default name is YCL_BW_<SOURCE>_<TARGET>
-        iv_ifname =  get_ov_ifname( ) "Interface name
-        iv_rtype = 'START'
-     ).
+    TRY.
+        create_class( ).
+      CATCH ycx_bw_trpn.
+    ENDTRY.
 
     generate_start_routine(
       EXPORTING
@@ -60,6 +46,12 @@ CLASS ycl_bw_trpn_rout_start IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD generate_start_routine.
+
+    DATA:
+      l_t_routine_source     TYPE rstran_t_abapsource,
+      l_t_routine_source_inv TYPE rstran_t_abapsource,
+      l_t_global_source      TYPE rstran_t_abapsource,
+      l_t_global_source_2    TYPE rstran_t_abapsource.
 
     "Get info about source and target, necessary to have auto rule copy
     SELECT SINGLE sourcename,targetname,sourcetype,targettype FROM rstran
@@ -100,11 +92,6 @@ CLASS ycl_bw_trpn_rout_start IMPLEMENTATION.
          e_globalid2 =  DATA(lv_globid2)
      ).
 
-    DATA:
-      l_t_routine_source     TYPE rstran_t_abapsource,
-      l_t_routine_source_inv TYPE rstran_t_abapsource,
-      l_t_global_source      TYPE rstran_t_abapsource,
-      l_t_global_source_2    TYPE rstran_t_abapsource.
     "Global code declarations
     APPEND VALUE #( line  = | DATA lobj_routine TYPE REF TO | ) TO l_t_global_source.
     APPEND VALUE #( line  = | { iv_clsname }. | ) TO l_t_global_source.
@@ -158,7 +145,7 @@ CLASS ycl_bw_trpn_rout_start IMPLEMENTATION.
     ).
 
     set_ov_ifname('YIF_BW_START_ROUTINE').
-
+    set_ov_rtype( 'START' ).
 
   ENDMETHOD.
 

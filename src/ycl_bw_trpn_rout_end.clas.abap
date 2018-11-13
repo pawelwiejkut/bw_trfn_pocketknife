@@ -31,13 +31,10 @@ CLASS ycl_bw_trpn_rout_end IMPLEMENTATION.
 
   METHOD create_end_routine.
 
-
-    create_class(
-      EXPORTING
-        iv_clsname = get_ov_classna( ) "Class default name is YCL_BW_<SOURCE>_<TARGET>
-        iv_ifname = get_ov_ifname( )  "Interface name
-        iv_rtype = 'END'
-     ).
+    TRY.
+        create_class( ).
+      CATCH ycx_bw_trpn.
+    ENDTRY.
 
     generate_end_routine(
       EXPORTING
@@ -51,6 +48,13 @@ CLASS ycl_bw_trpn_rout_end IMPLEMENTATION.
 
 
   METHOD generate_end_routine.
+
+      DATA:
+      l_t_routine_source     TYPE rstran_t_abapsource,
+      l_t_routine_source_inv TYPE rstran_t_abapsource,
+      l_t_global_source      TYPE rstran_t_abapsource,
+      l_t_global_source_2    TYPE rstran_t_abapsource.
+
 
     "Get info about source and target, necessary to have auto rule copy
     SELECT SINGLE sourcename,targetname,sourcetype,targettype FROM rstran
@@ -89,13 +93,6 @@ CLASS ycl_bw_trpn_rout_end IMPLEMENTATION.
          e_globalid  =  DATA(lv_globid)
          e_globalid2 =  DATA(lv_globid2)
      ).
-
-
-    DATA:
-      l_t_routine_source     TYPE rstran_t_abapsource,
-      l_t_routine_source_inv TYPE rstran_t_abapsource,
-      l_t_global_source      TYPE rstran_t_abapsource,
-      l_t_global_source_2    TYPE rstran_t_abapsource.
 
     "Global code declarations
     APPEND VALUE #( line  = | DATA lobj_routine TYPE REF TO | ) TO l_t_global_source.
@@ -151,6 +148,7 @@ CLASS ycl_bw_trpn_rout_end IMPLEMENTATION.
     ).
 
     set_ov_ifname('YIF_BW_END_ROUTINE').
+    set_ov_rtype( 'END').
 
   ENDMETHOD.
 

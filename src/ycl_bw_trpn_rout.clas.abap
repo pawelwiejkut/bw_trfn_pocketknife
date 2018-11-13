@@ -7,31 +7,31 @@ CLASS ycl_bw_trpn_rout DEFINITION
     METHODS constructor
       IMPORTING !iv_tranid TYPE rstranid.
 
-    "! <p class="shorttext synchronized" lang="en">Create class</p>
-    "! Create class which implements interface
-    "! @parameter iv_clsname | <p class="shorttext synchronized" lang="en">Class Name</p>
-    "! @parameter iv_intname | <p class="shorttext synchronized" lang="en">Interface Name</p>
-    METHODS create_class
-      IMPORTING !iv_clsname TYPE string
-                !iv_ifname  TYPE string
-                !iv_rtype   TYPE string.
+  PROTECTED SECTION.
 
-    "! <p class="shorttext synchronized" lang="en">Show class after creation</p>
-    "!
+    "! <p class="shorttext synchronized" lang="en"></p>
+    "! Create class
+    "! @raising ycx_bw_trpn | <p class="shorttext synchronized" lang="en">Error durig class creation</p>
+    METHODS create_class
+      RAISING ycx_bw_trpn.
+
+    "! <p class="shorttext synchronized" lang="en"></p>
+    "! Show created class
     METHODS show_class.
 
     METHODS: get_ov_classna RETURNING VALUE(r_result) TYPE string,
-             get_ov_ifname RETURNING VALUE(r_result) TYPE string,
-             set_ov_classna IMPORTING iv_ov_classna TYPE string,
-             set_ov_ifname IMPORTING iv_ov_ifname TYPE string.
+      get_ov_ifname  RETURNING VALUE(r_result) TYPE string,
+      set_ov_classna IMPORTING iv_ov_classna TYPE string,
+      set_ov_ifname  IMPORTING iv_ov_ifname TYPE string,
+      get_ov_rtype   RETURNING VALUE(r_result) TYPE string,
+      set_ov_rtype   IMPORTING iv_ov_rtype TYPE string.
 
-
-  PROTECTED SECTION.
   PRIVATE SECTION.
 
     DATA:
       ov_classna TYPE string,
-      ov_ifname  TYPE string.
+      ov_ifname  TYPE string,
+      ov_rtype   TYPE string.
 
 ENDCLASS.
 
@@ -42,6 +42,12 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
 
   METHOD create_class.
 
+    CONSTANTS: con_cl_desc TYPE string    VALUE 'Generated class for transformation' ##NO_TEXT,
+               con_lang    TYPE string    VALUE 'EN' ##NO_TEXT,
+               con_autor   TYPE string    VALUE 'SAP' ##NO_TEXT,
+               con_package TYPE devclass  VALUE '$TMP' ##NO_TEXT,
+               con_dcode   TYPE string    VALUE '* Here insert your own code' ##NO_TEXT.
+
     DATA: ls_vseoclass      TYPE vseoclass,
           ls_vseoimplem     TYPE vseoimplem,
           it_exceptions     TYPE seo_exceptions,
@@ -50,34 +56,51 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
           ls_method_sources TYPE seo_method_source,
           lt_method_sources TYPE seo_method_source_table.
 
-    ls_vseoclass-clsname = iv_clsname.
+
+    ls_vseoclass-clsname = ov_classna.
     ls_vseoclass-state = seoc_state_implemented.
     ls_vseoclass-exposure = seoc_exposure_public.
-    ls_vseoclass-langu = 'EN'.
-    ls_vseoclass-descript = 'Generated class for transformation'. "#EC NOTEXT
-    ls_vseoclass-clsccincl = 'X'.
-    ls_vseoclass-unicode = 'X'.
-    ls_vseoclass-author = 'SAP'.
+    ls_vseoclass-langu = con_lang.
+    ls_vseoclass-descript = con_cl_desc.
+    ls_vseoclass-clsccincl = abap_true.
+    ls_vseoclass-unicode = abap_true.
+    ls_vseoclass-author = con_autor.
 
-    ls_vseoimplem-clsname = iv_clsname.
-    ls_vseoimplem-refclsname = iv_ifname.
+    ls_vseoimplem-clsname = ov_classna.
+    ls_vseoimplem-refclsname = ov_ifname .
     ls_vseoimplem-state = seoc_state_implemented.
     APPEND ls_vseoimplem TO it_implementings.
 
-    ls_clskey-clsname = iv_clsname.
+    ls_clskey-clsname = ov_classna.
 
-    ls_method_sources-cpdname = |{ iv_ifname }{ iv_rtype }|.
-    APPEND '* Here insert your own code' TO ls_method_sources-source. "#EC NOTEXT
-    APPEND ls_method_sources TO lt_method_sources.
+    IF ov_rtype = 'START' OR ov_rtype = 'END'.
+
+      ls_method_sources-cpdname = |{ ov_ifname  }~{ ov_rtype }|.
+      APPEND con_dcode TO ls_method_sources-source.
+      APPEND ls_method_sources TO lt_method_sources.
+
+    ELSEIF ov_rtype = 'STEND'.
+
+      ls_method_sources-cpdname = |{ ov_ifname  }~END|.
+      APPEND con_dcode TO ls_method_sources-source.
+      APPEND ls_method_sources TO lt_method_sources.
+
+      CLEAR ls_method_sources.
+
+      ls_method_sources-cpdname = |{ ov_ifname  }~START|.
+      APPEND con_dcode TO ls_method_sources-source.
+      APPEND ls_method_sources TO lt_method_sources.
+
+    ENDIF.
 
     CALL FUNCTION 'SEO_CLASS_CREATE_COMPLETE'
       EXPORTING
-        devclass                   = '$TMP'                "Package
+        devclass                   = con_package
         version                    = seoc_version_active
         authority_check            = seox_true
         overwrite                  = seox_true
         suppress_method_generation = seox_false
-        genflag                    = seox_true             "Generated flag
+        genflag                    = seox_true
         method_sources             = lt_method_sources
       CHANGING
         class                      = ls_vseoclass
@@ -92,15 +115,14 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
         other                      = 6
         OTHERS                     = 7.
     IF sy-subrc <> 0.
-      MESSAGE ID sy-msgid TYPE 'S' NUMBER sy-msgno
-              WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-      EXIT.
+      RAISE EXCEPTION TYPE ycx_bw_trpn.
     ENDIF.
 
   ENDMETHOD.
 
 
   METHOD constructor.
+    CONSTANTS con_nmspc TYPE string VALUE `Y` ##NO_TEXT.
 
     TRY.
         CALL METHOD cl_rstran_trfn=>factory
@@ -116,24 +138,35 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
         lr_tran->get_target(
           IMPORTING
             e_s_target =  DATA(ls_target) ).
-      CATCH cx_rstran_not_found.    "
-      CATCH cx_rstran_input_invalid.    "
-      CATCH cx_rstran_error_with_message.
+
+      CATCH cx_rstran_not_found INTO DATA(lobj_rstran_not_found).
+        lobj_rstran_not_found->get_text( ).
+        RETURN.
+      CATCH cx_rstran_input_invalid INTO DATA(lobj_rstran_input_invalid).
+        lobj_rstran_input_invalid->get_text( ).
+        RETURN.
+      CATCH cx_rstran_error_with_message INTO DATA(lobj_rstran_error_with_message).
+        lobj_rstran_error_with_message->get_text( ).
+        RETURN.
     ENDTRY.
 
     SPLIT ls_source-objnm AT ' ' INTO: DATA(lv_source) DATA(lv_rest).
 
-    ov_classna = |YCL_BW_{ lv_source }_{ ls_target-objnm }|.
+    ov_classna = |{ con_nmspc }_CL_BW_{ lv_source }_{ ls_target-objnm }|.
+
 
   ENDMETHOD.
 
 
   METHOD show_class.
 
-    CALL FUNCTION 'RS_TOOL_ACCESS' "This can show created class
+    CONSTANTS: con_clas      VALUE 'CLAS' ##NO_TEXT,
+               con_operation VALUE 'SHOW' ##NO_TEXT.
+
+    CALL FUNCTION 'RS_TOOL_ACCESS' "FM to show created class
       EXPORTING
-        operation   = 'SHOW'
-        object_type = 'CLAS'
+        operation   = con_operation
+        object_type = con_clas
         object_name = ov_classna.
 
   ENDMETHOD.
@@ -152,6 +185,14 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
 
   METHOD get_ov_ifname.
     r_result = me->ov_ifname.
+  ENDMETHOD.
+
+  METHOD get_ov_rtype.
+    r_result = me->ov_rtype.
+  ENDMETHOD.
+
+  METHOD set_ov_rtype.
+    me->ov_rtype = iv_ov_rtype.
   ENDMETHOD.
 
 ENDCLASS.
