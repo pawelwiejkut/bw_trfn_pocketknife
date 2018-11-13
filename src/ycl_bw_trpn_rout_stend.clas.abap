@@ -1,0 +1,16 @@
+CLASS ycl_bw_trpn_rout_stend DEFINITION
+  PUBLIC
+  INHERITING FROM ycl_bw_trpn_rout
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+CLASS ycl_bw_trpn_rout_stend IMPLEMENTATION.
+
+
+
+ENDCLASS.

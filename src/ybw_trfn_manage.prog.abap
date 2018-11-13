@@ -19,5 +19,4 @@ END-OF-SELECTION.
 
 NEW ycl_bw_trfr_start(
     iv_tranid = pa_trid
-    iv_rtyp   = 'START'
 ).
