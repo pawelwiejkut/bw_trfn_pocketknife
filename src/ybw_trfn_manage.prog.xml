@@ -16,7 +16,7 @@
     <item>
      <ID>I</ID>
      <KEY>001</KEY>
-     <ENTRY>Create class based start routine in transformation</ENTRY>
+     <ENTRY>Create class based routine in transformation</ENTRY>
      <LENGTH>100</LENGTH>
     </item>
     <item>
@@ -26,9 +26,27 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>PA_END</KEY>
+     <ENTRY>End routine</ENTRY>
+     <LENGTH>19</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>PA_SCLA</KEY>
      <ENTRY>Show class after creation</ENTRY>
      <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_STED</KEY>
+     <ENTRY>Start and End routine</ENTRY>
+     <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_STRT</KEY>
+     <ENTRY>Start routine</ENTRY>
+     <LENGTH>21</LENGTH>
     </item>
     <item>
      <ID>S</ID>

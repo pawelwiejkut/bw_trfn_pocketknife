@@ -4,20 +4,17 @@ CLASS ycl_bw_trpn_rout DEFINITION
 
   PUBLIC SECTION.
 
+    INTERFACES: yif_bw_trpn_rout.
+
     METHODS constructor
-      IMPORTING !iv_tranid TYPE rstranid.
+      IMPORTING  iv_tranid TYPE rstranid.
+    METHODS: get_ov_trfnid RETURNING value(r_result) TYPE rstranid,
+             set_ov_trfnid IMPORTING iv_ov_trfnid TYPE rstranid.
 
   PROTECTED SECTION.
 
-    "! <p class="shorttext synchronized" lang="en"></p>
-    "! Create class
-    "! @raising ycx_bw_trpn | <p class="shorttext synchronized" lang="en">Error durig class creation</p>
-    METHODS create_class
-      RAISING ycx_bw_trpn.
-
-    "! <p class="shorttext synchronized" lang="en"></p>
-    "! Show created class
-    METHODS show_class.
+    ALIASES: create_class FOR yif_bw_trpn_rout~create_class,
+             show_class FOR yif_bw_trpn_rout~show_class.
 
     METHODS: get_ov_classna RETURNING VALUE(r_result) TYPE string,
       get_ov_ifname  RETURNING VALUE(r_result) TYPE string,
@@ -31,7 +28,8 @@ CLASS ycl_bw_trpn_rout DEFINITION
     DATA:
       ov_classna TYPE string,
       ov_ifname  TYPE string,
-      ov_rtype   TYPE string.
+      ov_rtype   TYPE string,
+      ov_trfnid  TYPE rstranid.
 
 ENDCLASS.
 
@@ -154,6 +152,7 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
 
     ov_classna = |{ con_nmspc }_CL_BW_{ lv_source }_{ ls_target-objnm }|.
 
+    ov_trfnid = iv_tranid.
 
   ENDMETHOD.
 
@@ -193,6 +192,14 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
 
   METHOD set_ov_rtype.
     me->ov_rtype = iv_ov_rtype.
+  ENDMETHOD.
+
+  METHOD get_ov_trfnid.
+    r_result = me->ov_trfnid.
+  ENDMETHOD.
+
+  METHOD set_ov_trfnid.
+    me->ov_trfnid = iv_ov_trfnid.
   ENDMETHOD.
 
 ENDCLASS.
