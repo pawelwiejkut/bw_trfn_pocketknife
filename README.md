@@ -24,6 +24,7 @@ Start routine class handle
 
 ## Next versions
 - Create default trfn bt dsos,
+- support for exoating code move to class
 - Show/create trfn in web ?
 
 
