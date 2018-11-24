@@ -23,8 +23,8 @@ https://1drv.ms/w/s!AnqUAr5ULTVlgVVTvStV_xtAVqlf
 Start routine class handle
 
 ## Next versions
-- Create default trfn bt dsos,
-- support for exoating code move to class
+- Create default trfn between dsos,
+- Support for existing code move to class,
 - Show/create trfn in web ?
 
 
