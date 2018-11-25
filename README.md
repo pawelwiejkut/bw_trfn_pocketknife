@@ -20,7 +20,8 @@ https://1drv.ms/w/s!AnqUAr5ULTVlgVVTvStV_xtAVqlf
 
 ## Feautures
 
-Start routine class handle
+- Start routine class handle
+- Customization table with maintenance view
 
 ## Next versions
 - Create default trfn between dsos,
