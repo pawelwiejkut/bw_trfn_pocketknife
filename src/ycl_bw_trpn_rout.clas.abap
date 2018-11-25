@@ -7,9 +7,9 @@ CLASS ycl_bw_trpn_rout DEFINITION
     INTERFACES: yif_bw_trpn_rout.
 
     METHODS constructor
-      IMPORTING  iv_tranid TYPE rstranid.
-    METHODS: get_ov_trfnid RETURNING value(r_result) TYPE rstranid,
-             set_ov_trfnid IMPORTING iv_ov_trfnid TYPE rstranid.
+      IMPORTING iv_tranid TYPE rstranid.
+    METHODS: get_ov_trfnid RETURNING VALUE(r_result) TYPE rstranid,
+      set_ov_trfnid IMPORTING iv_ov_trfnid TYPE rstranid.
 
   PROTECTED SECTION.
 
@@ -159,8 +159,8 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
 
   METHOD show_class.
 
-    CONSTANTS: con_clas      VALUE 'CLAS' ##NO_TEXT,
-               con_operation VALUE 'SHOW' ##NO_TEXT.
+    CONSTANTS: con_clas      TYPE string   VALUE 'CLAS' ##NO_TEXT,
+               con_operation TYPE string VALUE 'SHOW' ##NO_TEXT.
 
     CALL FUNCTION 'RS_TOOL_ACCESS' "FM to show created class
       EXPORTING
