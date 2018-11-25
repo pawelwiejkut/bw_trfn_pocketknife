@@ -11,13 +11,8 @@ CLASS ycl_bw_trpn_rout_end DEFINITION
                 !iv_clsname TYPE string
                 !iv_intname TYPE string.
 
-    METHODS create_end_routine
-      IMPORTING !iv_tranid TYPE rstranid.
 
-    METHODS start_processing
-      IMPORTING !iv_tranid  TYPE rstranid
-                !iv_routine TYPE string
-                !iv_clsshow TYPE boolean.
+    METHODS start_processing.
 
     METHODS constructor
       IMPORTING !iv_tranid TYPE rstranid.
@@ -28,23 +23,6 @@ ENDCLASS.
 
 
 CLASS ycl_bw_trpn_rout_end IMPLEMENTATION.
-
-  METHOD create_end_routine.
-
-    TRY.
-        create_class( ).
-      CATCH ycx_bw_trpn.
-    ENDTRY.
-
-    generate_end_routine(
-      EXPORTING
-        iv_tranid  = iv_tranid
-        iv_clsname = get_ov_classna( )  "Class default name is YCL_BW_<SOURCE>_<TARGET>
-        iv_intname = get_ov_ifname( )   "Interface name
-    ).
-
-
-  ENDMETHOD.
 
 
   METHOD generate_end_routine.
@@ -137,6 +115,16 @@ CLASS ycl_bw_trpn_rout_end IMPLEMENTATION.
 
 
   METHOD start_processing.
+
+    create_class( ).
+*    CATCH ycx_bw_trpn.    "
+
+    generate_end_routine(
+      EXPORTING
+        iv_tranid  = get_ov_trfnid( )
+        iv_clsname = get_ov_classna( )  "Class default name is YCL_BW_<SOURCE>_<TARGET>
+        iv_intname = get_ov_ifname( )   "Interface name
+    ).
 
   ENDMETHOD.
 

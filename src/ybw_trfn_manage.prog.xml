@@ -20,9 +20,63 @@
      <LENGTH>100</LENGTH>
     </item>
     <item>
+     <ID>I</ID>
+     <KEY>002</KEY>
+     <ENTRY>Options</ENTRY>
+     <LENGTH>18</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>003</KEY>
+     <ENTRY>Insert your own settings</ENTRY>
+     <LENGTH>48</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>004</KEY>
+     <ENTRY>Choose code</ENTRY>
+     <LENGTH>21</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>005</KEY>
+     <ENTRY>Customization Table</ENTRY>
+     <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>C01</KEY>
+     <ENTRY>For more settings please check customization table</ENTRY>
+     <LENGTH>100</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>N01</KEY>
+     <ENTRY>Generate class for TRFN</ENTRY>
+     <LENGTH>46</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>N02</KEY>
+     <ENTRY>Settings</ENTRY>
+     <LENGTH>18</LENGTH>
+    </item>
+    <item>
      <ID>R</ID>
      <ENTRY>Manage transformations</ENTRY>
      <LENGTH>22</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_CTAB</KEY>
+     <ENTRY>Customization table</ENTRY>
+     <LENGTH>27</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_DEFCO</KEY>
+     <ENTRY>Default code</ENTRY>
+     <LENGTH>20</LENGTH>
     </item>
     <item>
      <ID>S</ID>
@@ -32,9 +86,51 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>PA_ERCL</KEY>
+     <ENTRY>End routine class</ENTRY>
+     <LENGTH>25</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_ERME</KEY>
+     <ENTRY>End routine method</ENTRY>
+     <LENGTH>26</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_MOV</KEY>
+     <ENTRY>Move existing source into</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_OVER</KEY>
+     <ENTRY>Overwrite existing trfn</ENTRY>
+     <LENGTH>31</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_OWCOD</KEY>
+     <ENTRY>Own code</ENTRY>
+     <LENGTH>16</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>PA_SCLA</KEY>
      <ENTRY>Show class after creation</ENTRY>
      <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_SRCL</KEY>
+     <ENTRY>Source class</ENTRY>
+     <LENGTH>20</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>PA_SRME</KEY>
+     <ENTRY>Start routine method</ENTRY>
+     <LENGTH>28</LENGTH>
     </item>
     <item>
      <ID>S</ID>

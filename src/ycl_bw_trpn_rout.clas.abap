@@ -159,7 +159,7 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
 
   METHOD show_class.
 
-    CONSTANTS: con_clas      TYPE string   VALUE 'CLAS' ##NO_TEXT,
+    CONSTANTS: con_clas      TYPE string VALUE 'CLAS' ##NO_TEXT,
                con_operation TYPE string VALUE 'SHOW' ##NO_TEXT.
 
     CALL FUNCTION 'RS_TOOL_ACCESS' "FM to show created class

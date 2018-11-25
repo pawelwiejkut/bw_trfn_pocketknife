@@ -14,7 +14,10 @@ CLASS ycl_bw_trpn_rout_stend DEFINITION
                 !iv_clsname TYPE string
                 !iv_intname TYPE string.
 
-  PROTECTED SECTION.
+    METHODS start_processing.
+
+
+protected section.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -35,6 +38,10 @@ CLASS ycl_bw_trpn_rout_stend IMPLEMENTATION.
 
 
   METHOD generate_start_end_routine.
+
+  ENDMETHOD.
+
+  METHOD start_processing.
 
   ENDMETHOD.
 
