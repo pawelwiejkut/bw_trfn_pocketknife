@@ -102,14 +102,7 @@ CLASS ycl_bw_trpn_rout_end IMPLEMENTATION.
     "ADMP change, necessary to handle global code
     lr_rule->set_runtime_flag( ).
 
-    TRY.
-        lr_tran->if_rso_tlogo_maintain~save( ).
-      CATCH cx_rs_error_with_message.
-        "handle exception
-    ENDTRY.
-
-    lr_tran->if_rso_tlogo_maintain~activate(  ).
-
+    save_and_activate( lr_tran ).
 
   ENDMETHOD.
 

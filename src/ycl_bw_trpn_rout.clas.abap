@@ -6,6 +6,9 @@ CLASS ycl_bw_trpn_rout DEFINITION
 
     INTERFACES: yif_bw_trpn_rout.
 
+    METHODS: save_and_activate
+      IMPORTING ir_tran TYPE REF TO cl_rstran_trfn.
+
     METHODS constructor
       IMPORTING iv_tranid TYPE rstranid.
     METHODS: get_ov_trfnid RETURNING VALUE(r_result) TYPE rstranid,
@@ -200,6 +203,18 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
 
   METHOD set_ov_trfnid.
     me->ov_trfnid = iv_ov_trfnid.
+  ENDMETHOD.
+
+  METHOD save_and_activate.
+
+    TRY.
+        ir_tran->if_rso_tlogo_maintain~save( ).
+      CATCH cx_rs_error_with_message.
+        "handle exception
+    ENDTRY.
+
+    ir_tran->if_rso_tlogo_maintain~activate(  ).
+
   ENDMETHOD.
 
 ENDCLASS.
