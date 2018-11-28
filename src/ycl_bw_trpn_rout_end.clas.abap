@@ -15,10 +15,14 @@ CLASS ycl_bw_trpn_rout_end DEFINITION
     METHODS start_processing.
 
     METHODS constructor
-      IMPORTING !iv_tranid TYPE rstranid.
+      IMPORTING !iv_tranid TYPE rstranid
+                !iv_tabna  TYPE string.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
+
+    CONSTANTS con_ifend TYPE string VALUE 'IF_END' ##NO_TEXT.
+
 ENDCLASS.
 
 
@@ -27,7 +31,7 @@ CLASS ycl_bw_trpn_rout_end IMPLEMENTATION.
 
   METHOD generate_end_routine.
 
-      DATA:
+    DATA:
       l_t_routine_source     TYPE rstran_t_abapsource,
       l_t_routine_source_inv TYPE rstran_t_abapsource,
       l_t_global_source      TYPE rstran_t_abapsource,
@@ -126,9 +130,11 @@ CLASS ycl_bw_trpn_rout_end IMPLEMENTATION.
     super->constructor(
       EXPORTING
         iv_tranid = iv_tranid
+        iv_tabna = iv_tabna
     ).
 
-    set_ov_ifname('YIF_BW_END_ROUTINE').
+    DATA(ls_ifst) = get_ov_param( con_ifend ).
+    set_ov_ifname( CONV #( ls_ifst-properties ) ).
     set_ov_rtype( 'END').
 
   ENDMETHOD.

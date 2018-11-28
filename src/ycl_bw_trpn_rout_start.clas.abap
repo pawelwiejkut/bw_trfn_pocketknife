@@ -14,10 +14,14 @@ CLASS ycl_bw_trpn_rout_start DEFINITION
     METHODS start_processing.
 
     METHODS constructor
-      IMPORTING !iv_tranid TYPE rstranid.
+      IMPORTING !iv_tranid TYPE rstranid
+                !iv_tabna  TYPE string.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
+
+    CONSTANTS con_ifst TYPE string VALUE 'IF_START' ##NO_TEXT.
+
 ENDCLASS.
 
 
@@ -101,14 +105,7 @@ CLASS ycl_bw_trpn_rout_start IMPLEMENTATION.
     "ADMP change, necessary to handle global code
     l_rule->set_runtime_flag( ).
 
-    TRY.
-        lr_tran->if_rso_tlogo_maintain~save( ).
-      CATCH cx_rs_error_with_message.
-        "handle exception
-    ENDTRY.
-
-    lr_tran->if_rso_tlogo_maintain~activate(  ).
-
+    save_and_activate( lr_tran ).
 
   ENDMETHOD.
 
@@ -129,11 +126,13 @@ CLASS ycl_bw_trpn_rout_start IMPLEMENTATION.
   METHOD constructor.
 
     super->constructor(
-      EXPORTING
-        iv_tranid = iv_tranid
-    ).
+       EXPORTING
+         iv_tranid = iv_tranid
+         iv_tabna = iv_tabna
+     ).
 
-    set_ov_ifname('YIF_BW_START_ROUTINE').
+    DATA(ls_ifst) = get_ov_param( con_ifst ).
+    set_ov_ifname( CONV #( ls_ifst-properties ) ).
     set_ov_rtype( 'START' ).
 
   ENDMETHOD.

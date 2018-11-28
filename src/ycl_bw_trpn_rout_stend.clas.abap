@@ -7,7 +7,8 @@ CLASS ycl_bw_trpn_rout_stend DEFINITION
   PUBLIC SECTION.
 
     METHODS constructor
-      IMPORTING iv_tranid TYPE rstranid.
+      IMPORTING !iv_tranid TYPE rstranid
+                !iv_tabna  TYPE string.
 
     METHODS generate_start_end_routine
       IMPORTING !iv_tranid  TYPE rstranid
@@ -17,7 +18,7 @@ CLASS ycl_bw_trpn_rout_stend DEFINITION
     METHODS start_processing.
 
 
-protected section.
+  PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -29,6 +30,7 @@ CLASS ycl_bw_trpn_rout_stend IMPLEMENTATION.
     super->constructor(
        EXPORTING
          iv_tranid = iv_tranid
+         iv_tabna = iv_tabna
      ).
 
     set_ov_ifname('YIF_BW_END_ROUTINE').
@@ -39,7 +41,7 @@ CLASS ycl_bw_trpn_rout_stend IMPLEMENTATION.
 
   METHOD generate_start_end_routine.
 
-      DATA:
+    DATA:
       l_t_routine_source     TYPE rstran_t_abapsource,
       l_t_routine_source_inv TYPE rstran_t_abapsource,
       l_t_global_source      TYPE rstran_t_abapsource,

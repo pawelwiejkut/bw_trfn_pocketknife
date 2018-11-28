@@ -14,6 +14,9 @@ INHERITING FROM ycl_bw_trpn_rout
       constructor_test FOR TESTING RAISING cx_static_check,
       create_class_test FOR TESTING RAISING cx_static_check.
 
+    CONSTANTS:
+      con_tabna TYPE string VALUE 'YBW_CTRPN'.
+
 ENDCLASS.
 
 
@@ -22,11 +25,11 @@ CLASS ltcl_ IMPLEMENTATION.
 
   METHOD setup.
 
-    lobj_global = NEW #( iv_tranid = '0ERRA0ODM95RW0KJFYO09TR0JSOI8JQD' ). "Test trfn, should be automatic later.
+    lobj_global = NEW #( iv_tranid = '0ERRA0ODM95RW0KJFYO09TR0JSOI8JQD' iv_tabna = con_tabna ). "Test trfn, should be automatic later.
 
   ENDMETHOD.
 
-    METHOD constructor_test.
+  METHOD constructor_test.
 
     DATA(lv_test) = lobj_global->get_ov_classna( ).
 

@@ -92,9 +92,9 @@ END-OF-SELECTION.
 
   CASE 'X'.
     WHEN pa_strt.
-      NEW ycl_bw_trpn_rout_start( iv_tranid = pa_trid )->start_processing( ).
+      NEW ycl_bw_trpn_rout_start( iv_tranid = pa_trid iv_tabna = pa_ctab )->start_processing( ).
     WHEN pa_end.
-      NEW ycl_bw_trpn_rout_end( iv_tranid = pa_trid )->start_processing( ).
+      NEW ycl_bw_trpn_rout_end( iv_tranid = pa_trid iv_tabna = pa_ctab )->start_processing( ).
     WHEN pa_sted.
-      NEW ycl_bw_trpn_rout_stend( iv_tranid = pa_trid )->start_processing( ).
+      NEW ycl_bw_trpn_rout_stend( iv_tranid = pa_trid iv_tabna = pa_ctab )->start_processing( ).
   ENDCASE.

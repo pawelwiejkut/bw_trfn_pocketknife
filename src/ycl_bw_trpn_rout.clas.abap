@@ -5,14 +5,28 @@ CLASS ycl_bw_trpn_rout DEFINITION
   PUBLIC SECTION.
 
     INTERFACES: yif_bw_trpn_rout.
+    TYPES:
+      ty_ctab TYPE  ybw_ctrpn.
 
     METHODS: save_and_activate
       IMPORTING ir_tran TYPE REF TO cl_rstran_trfn.
 
     METHODS constructor
-      IMPORTING iv_tranid TYPE rstranid.
+      IMPORTING !iv_tranid TYPE rstranid
+                !iv_tabna  TYPE string.
+
     METHODS: get_ov_trfnid RETURNING VALUE(r_result) TYPE rstranid,
       set_ov_trfnid IMPORTING iv_ov_trfnid TYPE rstranid.
+
+    METHODS buffer_cust
+      IMPORTING !iv_tabna TYPE string.
+
+    METHODS: get_ov_param
+      IMPORTING !iv_param       TYPE string
+      RETURNING VALUE(r_result) TYPE ty_ctab.
+
+    CONSTANTS: cons_nmspc TYPE string VALUE 'NAMESPACE',
+               cons_patt  TYPE string VALUE 'CL_PATT'.
 
   PROTECTED SECTION.
 
@@ -32,7 +46,8 @@ CLASS ycl_bw_trpn_rout DEFINITION
       ov_classna TYPE string,
       ov_ifname  TYPE string,
       ov_rtype   TYPE string,
-      ov_trfnid  TYPE rstranid.
+      ov_trfnid  TYPE rstranid,
+      ov_ctab    TYPE STANDARD TABLE OF ybw_ctrpn.
 
 ENDCLASS.
 
@@ -123,7 +138,6 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
 
 
   METHOD constructor.
-    CONSTANTS con_nmspc TYPE string VALUE `Y` ##NO_TEXT.
 
     TRY.
         CALL METHOD cl_rstran_trfn=>factory
@@ -149,11 +163,20 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
       CATCH cx_rstran_error_with_message INTO DATA(lobj_rstran_error_with_message).
         lobj_rstran_error_with_message->get_text( ).
         RETURN.
+
+        buffer_cust( iv_tabna ).
+
     ENDTRY.
 
     SPLIT ls_source-objnm AT ' ' INTO: DATA(lv_source) DATA(lv_rest).
 
-    ov_classna = |{ con_nmspc }_CL_BW_{ lv_source }_{ ls_target-objnm }|.
+    DATA(ls_nmspc) = get_ov_param( cons_nmspc ).
+    DATA(ls_patt) = get_ov_param( cons_patt ).
+
+    REPLACE REGEX '<SRC>' IN ls_patt-properties WITH lv_source.
+    REPLACE REGEX '<DEST>' IN ls_patt-properties WITH ls_target-objnm.
+
+    ov_classna = |{ ls_nmspc-properties }{ ls_patt-properties }|.
 
     ov_trfnid = iv_tranid.
 
@@ -214,6 +237,21 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
     ENDTRY.
 
     ir_tran->if_rso_tlogo_maintain~activate(  ).
+
+  ENDMETHOD.
+
+  METHOD buffer_cust.
+
+    SELECT * FROM (iv_tabna) INTO TABLE @ov_ctab.
+
+  ENDMETHOD.
+
+  METHOD get_ov_param.
+
+    TRY.
+        r_result = me->ov_ctab[ iv_param ].
+        """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" TO-DO Error handling
+    ENDTRY.
 
   ENDMETHOD.
 
