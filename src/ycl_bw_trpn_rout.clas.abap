@@ -249,7 +249,9 @@ CLASS ycl_bw_trpn_rout IMPLEMENTATION.
   METHOD get_ov_param.
 
     TRY.
-        r_result = me->ov_ctab[ iv_param ].
+
+      r_result = me->ov_ctab[ id = iv_param ].
+      CATCH cx_sy_itab_line_not_found.
         """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" TO-DO Error handling
     ENDTRY.
 
