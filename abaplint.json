@@ -9,7 +9,7 @@
     },
     "line_length": {
       "enabled": true,
-      "length": 120
+      "length": 140
     },
     "start_at_tab": {
       "enabled": true
