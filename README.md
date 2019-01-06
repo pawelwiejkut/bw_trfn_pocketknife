@@ -2,6 +2,8 @@
 
 Master : [![Build Status](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife.svg?branch=master)](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife)
 
+Develop : [![Build Status](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife.svg?branch=develop)](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife)
+
 Software for modern transformation handle, now you dont have to edit all of them and add class inside.
 
 ## How it works?
