@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife.svg?branch=master)](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife) [![codecov](https://codecov.io/gh/pawelwiejkut/bw_trfn_pocketknife/branch/master/graph/badge.svg)](https://codecov.io/gh/pawelwiejkut/bw_trfn_pocketknife)
 
-Software for modern transformation handle, now you dont have to edit all of them and add class inside.
+Software for modern transformation handle, now you dont have to edit all of them and add class inside. Feel free to contribute and create pull requests.
 
 ## How it works?
 
