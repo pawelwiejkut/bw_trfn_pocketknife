@@ -10,10 +10,6 @@
     "contains_tab": {
       "enabled": true
     },
-    "functional_writing": {
-      "enabled": true,
-      "ignoreExceptions": true
-    },
     "line_length": {
       "enabled": true,
       "length": 170
