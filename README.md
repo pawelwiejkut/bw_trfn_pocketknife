@@ -1,4 +1,4 @@
-# BW Transfomation Pocketknife 📊🔪
+# BW Transfomation Pocketknife 📊🔩
 
 [![Build Status](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife.svg?branch=master)](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife) [![codecov](https://codecov.io/gh/pawelwiejkut/bw_trfn_pocketknife/branch/master/graph/badge.svg)](https://codecov.io/gh/pawelwiejkut/bw_trfn_pocketknife)
 
