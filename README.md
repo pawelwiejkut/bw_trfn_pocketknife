@@ -18,11 +18,9 @@ This is a framework for better transformation handling in SAP BW. Normally you h
 
 Clone this repository using [ABAP Git](https://github.com/larshp/abapGit)
 
-## Naming conventions
+## ~~Naming convention~~
 
-This project using a following naming conventions:
-
-https://1drv.ms/w/s!AnqUAr5ULTVlgVVTvStV_xtAVqlf
+No longer required, refactor in progress. New requirements described in: [this repo](https://github.com/SAP/styleguides/blob/master/clean-abap/CleanABAP.md)
 
 ## Feautures
 
