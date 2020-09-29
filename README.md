@@ -23,7 +23,7 @@ Clone this repository using [ABAP Git](https://github.com/larshp/abapGit)
 - Start routine class handle
 - Customization table with maintenance view
 
-## Next versions
+## Next versions ideas
 - Create default trfn between dsos,
 - Support for existing code move to class,
 
