@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife.svg?branch=master)](https://travis-ci.com/pawelwiejkut/bw_trfn_pocketknife) 
 
+[![YourActionName Actions Status](https://github.com/pawelwiejkut/bw_trfn_pocketknife/workflows/CI/badge.svg)](https://github.com/pawelwiejkut/bw_trfn_pocketknife/actions)
+
 Software for modern transformation handle, now you dont have to edit all of them and add class inside. Feel free to contribute and create pull requests.
 
 ## How it works?
