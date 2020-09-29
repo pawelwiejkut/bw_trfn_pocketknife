@@ -12,7 +12,6 @@ CLASS zcl_bw_trfr_main DEFINITION
       IMPORTING !iv_tranid TYPE rstranid.
 
     "! <p class="shorttext synchronized" lang="en">Create start routine</p>
-    "!
     "! @parameter iv_tranid | <p class="shorttext synchronized" lang="en">Transformation ID</p>
     METHODS create_start_routine
       IMPORTING !iv_tranid TYPE rstranid.
@@ -89,13 +88,13 @@ CLASS zcl_bw_trfr_main IMPLEMENTATION.
     ls_vseoclass-author = 'SAP'.
 
     ls_vseoimplem-clsname = iv_clsname.
-    ls_vseoimplem-refclsname = 'YIF_BW_START_ROUTINE'.
+    ls_vseoimplem-refclsname = 'ZIF_BW_START_ROUTINE'.
     ls_vseoimplem-state = seoc_state_implemented.
     APPEND ls_vseoimplem TO it_implementings.
 
     ls_clskey-clsname = iv_clsname.
 
-    ls_method_sources-cpdname = 'YIF_BW_START_ROUTINE~START'.
+    ls_method_sources-cpdname = 'ZIF_BW_START_ROUTINE~START'.
     APPEND '* Here insert your own code' TO ls_method_sources-source. "#EC NOTEXT
     APPEND ls_method_sources TO lt_method_sources.
 
@@ -132,13 +131,13 @@ CLASS zcl_bw_trfr_main IMPLEMENTATION.
   METHOD create_start_routine.
 
     create_class(
-        iv_clsname = ov_classna "Class default name is YCL_BW_SOURCE_TARGET
+        iv_clsname = ov_classna "Class default name is ZCL_BW_SOURCE_TARGET
         iv_intname = ov_ifname  "Interface name
      ).
 
     generate_start_routine(
         iv_tranid  = iv_tranid
-        iv_clsname = ov_classna  "Class default name is YCL_BW_SOURCE_TARGET
+        iv_clsname = ov_classna  "Class default name is ZCL_BW_SOURCE_TARGET
         iv_intname = ov_ifname   "Interface name
     ).
 
@@ -151,6 +150,9 @@ CLASS zcl_bw_trfr_main IMPLEMENTATION.
     SELECT SINGLE sourcename,targetname,sourcetype,targettype FROM rstran
     INTO  @DATA(ls_rstran)
     WHERE tranid = @iv_tranid AND objvers = 'A'.
+    IF sy-subrc <> 0.
+      MESSAGE 'Rotuine not exists' TYPE 'E'.
+    ENDIF.
 
     DATA: lr_tran TYPE REF TO cl_rstran_trfn.
     TRY.
@@ -160,9 +162,9 @@ CLASS zcl_bw_trfr_main IMPLEMENTATION.
             i_s_target     = CONV #( |{ ls_rstran-targettype }{ ls_rstran-targetname } | )
             i_new          = abap_true
             i_with_message = rs_c_true ) .
-      CATCH cx_rstran_not_found.    "
-      CATCH cx_rstran_input_invalid.    "
-      CATCH cx_rstran_error_with_message.    "
+      CATCH cx_rstran_not_found.
+      CATCH cx_rstran_input_invalid.
+      CATCH cx_rstran_error_with_message.
     ENDTRY.
 
     TRY.
@@ -241,11 +243,7 @@ CLASS zcl_bw_trfr_main IMPLEMENTATION.
   METHOD set_globals.
 
     TRY.
-        CALL METHOD cl_rstran_trfn=>factory
-          EXPORTING
-            i_tranid = iv_tranid
-          RECEIVING
-            r_r_tran = DATA(lr_tran).
+        DATA(lr_tran) = cl_rstran_trfn=>factory( i_tranid = iv_tranid ).
 
         lr_tran->get_source(
           IMPORTING
@@ -261,8 +259,8 @@ CLASS zcl_bw_trfr_main IMPLEMENTATION.
 
     SPLIT ls_source-objnm AT ' ' INTO: DATA(lv_source) DATA(lv_rest).
 
-    ov_classna = |YCL_BW_{ lv_source }_{ ls_target-objnm }|.
-    ov_ifname = 'YIF_BW_START_ROUTINE'.
+    ov_classna = |ZCL_BW_{ lv_source }_{ ls_target-objnm }|.
+    ov_ifname = 'ZIF_BW_START_ROUTINE'.
 
   ENDMETHOD.
 
