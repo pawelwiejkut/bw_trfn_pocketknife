@@ -35,11 +35,9 @@ CLASS zcl_bw_trfr_main DEFINITION
                 !iv_intname TYPE string.
 
     "! <p class="shorttext synchronized" lang="en">Show class after creation</p>
-    "!
     METHODS show_class.
 
     "! <p class="shorttext synchronized" lang="en">Start processing</p>
-    "!
     "! @parameter iv_clsname | <p class="shorttext synchronized" lang="en">Class name</p>
     "! @parameter iv_clsshow | <p class="shorttext synchronized" lang="en">Show class after generation?</p>
     METHODS start_processing
