@@ -58,7 +58,7 @@
         "max_one_statement": true,
         "message_exists": true,
         "method_length": {
-            "statements": 30,
+            "statements": 50,
             "ignoreTestClasses": false,
             "errorWhenEmpty": true
         },
