@@ -168,11 +168,8 @@ CLASS zcl_bw_trfr_main IMPLEMENTATION.
     ENDTRY.
 
     TRY.
-        lr_tran->create_start_routine(
-            i_amdp = rs_c_false
-        ).
+        lr_tran->create_start_routine( i_amdp = rs_c_false ).
       CATCH cx_rstran_input_invalid.
-        "handle exception
     ENDTRY.
 
     DATA(l_rule) = lr_tran->get_start_rule( ).
@@ -245,13 +242,10 @@ CLASS zcl_bw_trfr_main IMPLEMENTATION.
     TRY.
         DATA(lr_tran) = cl_rstran_trfn=>factory( i_tranid = iv_tranid ).
 
-        lr_tran->get_source(
-          IMPORTING
-           e_s_source =  DATA(ls_source) ).
+        lr_tran->get_source( IMPORTING e_s_source =  DATA(ls_source) ).
 
-        lr_tran->get_target(
-          IMPORTING
-            e_s_target =  DATA(ls_target) ).
+        lr_tran->get_target( IMPORTING e_s_target =  DATA(ls_target) ).
+
       CATCH cx_rstran_not_found.    "
       CATCH cx_rstran_input_invalid.    "
       CATCH cx_rstran_error_with_message.
